@@ -4,6 +4,11 @@
 #include <Wire.h>
 #include <ST7032.h>
 
+#include <ros.h>
+#include <std_msgs/Float32.h>
+//Leonardo互換機ではひつよう
+#define USE_USBCON
+
 ST7032 lcd;
 
 #define Vout_pin 21
@@ -34,6 +39,10 @@ typedef union{//前回起動時のデータを共用体に記憶しておく。
 
 ROM offset;                   //offset:Vout_offset用の共用体
 
+ros::NodeHandle nh;
+std_msgs::Float32 weight_msg;
+ros::Publisher weight_pub("weight_pub",&weight_msg);
+
 float Vout,W;                 //Vout:出力電圧[v] W:重さ[kg]
 float Vout_offset;            //Vout_offset:体重計起動時のVoutの値(オフセット)
 float dv_dw;                  //dv_dw:グラフの傾き自動調整される予定だった。初期値DV_DWのまま。
@@ -60,6 +69,10 @@ void setup() {
   //Vout_offsetの取得
   read_data(EEP_ADRS_OFF);
   Vout_offset = offset.all_data;
+
+  //ROS関係
+  nh.initNode();
+  nh.advertise(weight_pub);
 }
 
 void loop() {
@@ -109,6 +122,10 @@ void loop() {
     lcd.setCursor(5,1);
     lcd.print("[L]");
     
+    weight_msg.data = W;
+    weight_pub.publish(&weight_msg);
+    nh.spinOnce();
+
     delay(200);
   }
 }
