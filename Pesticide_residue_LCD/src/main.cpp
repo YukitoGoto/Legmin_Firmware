@@ -11,17 +11,16 @@
 #define Pressure_pin 36
 #define Flowmeter_pin 5
 #define Pomp_pin 16
-#define SW_pin 15
-#define SW_length_short 1000
-#define SW_length_long 100000
 #define Read_cnt_ 1000
-#define Sample_cnt_ 100
+#define Analog_Max 4095.0 //Analog値がMaxの時の値 promicro:1024.0 esp32:4059.0
 
 #define EEP_ADRS_OFF 0    //offset用のアドレス:0~3
+#define EEP_SIZE 4        //EEPROMで扱うデータのサイズ
 
 //個体毎に調整が必要なdefineを以下に示す。
-#define Vcc 4.56
-/*---Vcc:promicroのVcc端子の電位[V]である。テスターで測った値は次のようになった。:4.54 < Vcc < 4.58:体重計に何の乗せない時のVout[V]の値が、テスターで測った値と同じくらい(許容10[mV]以内)になるように調整する。---*/
+#define Analog_Max_Vout 3.50
+/*---Analog_Max_Vout:Analog値がAnalog_Maxの時の出力電圧[v] promicro:4.56[v] esp32:3.50[v]---*/
+
 //#define Dv_Dw 0.02362
 //重りの場合
 //#define Dv_Dw 0.028344
@@ -33,7 +32,7 @@
 typedef union{//前回起動時のデータを共用体に記憶しておく。
   float all_data;
   //この処理系ではfloatは4バイト
-  unsigned char part_data[4];
+  uint8_t part_data[4];
 }ROM;
 
 ROM offset;                   //offset:Vout_offset用の共用体
@@ -45,7 +44,6 @@ ros::Publisher weight_pub("weight_pub",&weight_msg);
 float Vout,W;                 //Vout:出力電圧[v] W:重さ[kg]
 float Vout_offset;            //Vout_offset:体重計起動時のVoutの値(オフセット)
 float dv_dw;                  //dv_dw:グラフの傾き自動調整される予定だった。初期値DV_DWのまま。
-int sw;                       //sw:スイッチの状態:負論理
 
 void Read_Vout(int Read_cnt);            //Read_Vout:出力電圧測定関数 Read_cnt:読み取り回数
 void Lead_W(float Vout_);                //Lead_W:出力電圧を重さに変換する関数 Vout:出力電圧[v]
@@ -55,12 +53,15 @@ void read_data(int adr);                 //read_data:EEPROMから4バイトご�
 
 void setup() {
   //Serial.begin(9600);
+  //M5Stack初期化
   M5.begin();
   M5.Lcd.setTextSize(2);
-  pinMode(SW_pin,INPUT_PULLUP);
+
+  //esp32ではeepromの初期宣言が必要
+  EEPROM.begin(EEP_SIZE);
 
   //諸変数の初期化
-  Vout = 0.0,W = 0.0,sw = LOW;
+  Vout = 0.0,W = 0.0;
   dv_dw = Dv_Dw;
 
   //Vout_offsetの取得
@@ -74,19 +75,20 @@ void setup() {
 }
 
 void loop() {
-  sw = digitalRead(SW_pin);
-
+  //スイッチの状態を更新
+  M5.update();
+  
   //スイッチが押されたらRE_Vout_offsetを呼び出す。0[kg]調整される。
-  if(sw == LOW){
-    long int sw_cnt = 0;
+  if(M5.BtnA.isPressed()){
     Re_Vout_offset();
     
     //Serial.print("\n----------------------------------\n");
     //Serial.print("Vout_offset[V] = ");  Serial.println(Vout_offset,4);
 
-    //1行目
     M5.Lcd.setCursor(0,0);
+    //1行目
     M5.Lcd.println("offset!");
+    //2行目
     M5.Lcd.println("reset!");
     
     delay(1000);
@@ -101,8 +103,9 @@ void loop() {
     //1行目
     M5.Lcd.setCursor(0,0);
     M5.Lcd.println("Nowvalue");
+
     //2行目
-    M5.Lcd.println(" ");
+    M5.Lcd.print(" ");
     if(W < 10.0){
       if(W <= 5.0){
       //led反転
@@ -128,7 +131,7 @@ void Read_Vout(int Read_cnt){
   
   for(cnt = 0;cnt < Read_cnt;cnt++){
     Vout_val = analogRead(Vout_pin);
-    Vout = (float)Vout_val * Vcc / 1023.0;
+    Vout = (float)Vout_val * Analog_Max_Vout / Analog_Max;
     Vout_sum += Vout;
   }
   
@@ -156,13 +159,15 @@ void write_data(int adr){
       //Serial.print("write_Error!\n");
       break;
     }
+    //eps32では書き込み後にコミットが必要
+    EEPROM.commit();
   }
 }
 
 void read_data(int adr){
   int i;
   for(i = 0;i < 4;i++){
-    if(adr == EEP_ADRS_OFF)  
+    if(adr == EEP_ADRS_OFF)
       offset.part_data[i] = EEPROM.read(adr + i);
     else{
       //Serial.print("\n----------------------------------\n");
