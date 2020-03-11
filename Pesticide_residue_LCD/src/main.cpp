@@ -6,8 +6,6 @@
 
 #include <ros.h>
 #include <std_msgs/Float32.h>
-//Leonardo互換機ではひつよう
-#define USE_USBCON
 
 ST7032_asukiaaa lcd;
 
@@ -55,12 +53,12 @@ void write_data(int adr);                //write_data:EEPROMに4バイトごと�
 void read_data(int adr);                 //read_data:EEPROMから4バイトごとに読み込む
 
 void setup() {
-  Serial.begin(9600);
+  //Serial.begin(9600);
   // LCD表示領域設定(8桁, 2行)
   lcd.begin(8, 2);
   // コントラスト設定(0〜63)
   lcd.setContrast(30);
-  pinMode(SW_pin,INPUT);
+  pinMode(SW_pin,INPUT_PULLUP);
 
   //諸変数の初期化
   Vout = 0.0,W = 0.0,sw = LOW;
@@ -71,6 +69,7 @@ void setup() {
   Vout_offset = offset.all_data;
 
   //ROS関係
+  nh.getHardware()->setBaud(115200);
   nh.initNode();
   nh.advertise(weight_pub);
 }
@@ -78,13 +77,19 @@ void setup() {
 void loop() {
   sw = digitalRead(SW_pin);
 
+  while(true){
+    weight_msg.data = W;
+    weight_pub.publish(&weight_msg);
+    nh.spinOnce();
+  }
+
   //スイッチが押されたらRE_Vout_offsetを呼び出す。0[kg]調整される。
   if(sw == LOW){
     long int sw_cnt = 0;
     Re_Vout_offset();
     
-    Serial.print("\n----------------------------------\n");
-    Serial.print("Vout_offset[V] = ");  Serial.println(Vout_offset,4);
+    //Serial.print("\n----------------------------------\n");
+    //Serial.print("Vout_offset[V] = ");  Serial.println(Vout_offset,4);
 
     //1行目
     lcd.setCursor(0,0);
@@ -98,9 +103,9 @@ void loop() {
   else{
     Read_Vout(Read_cnt_);
     Lead_W(Vout);
-    Serial.print("\n----------------------------------\n");
-    Serial.print("Vout[V] = "); Serial.println(Vout,4);
-    Serial.print("W[Kg] = "); Serial.println(W,4);
+    //Serial.print("\n----------------------------------\n");
+    //Serial.print("Vout[V] = "); Serial.println(Vout,4);
+    //Serial.print("W[Kg] = "); Serial.println(W,4);
     
     //1行目
     lcd.setCursor(0,0);
@@ -122,12 +127,9 @@ void loop() {
     lcd.setCursor(5,1);
     lcd.print("[L]");
     
-    weight_msg.data = W;
-    weight_pub.publish(&weight_msg);
-    nh.spinOnce();
-
     delay(200);
   }
+  
 }
 
 void Read_Vout(int Read_cnt){
@@ -160,8 +162,8 @@ void write_data(int adr){
     if(adr == EEP_ADRS_OFF)  
       EEPROM.write(adr + i,offset.part_data[i]);
     else{
-      Serial.print("\n----------------------------------\n");
-      Serial.print("write_Error!\n");
+      //Serial.print("\n----------------------------------\n");
+      //Serial.print("write_Error!\n");
       break;
     }
   }
@@ -173,8 +175,8 @@ void read_data(int adr){
     if(adr == EEP_ADRS_OFF)  
       offset.part_data[i] = EEPROM.read(adr + i);
     else{
-      Serial.print("\n----------------------------------\n");
-      Serial.print("read_Error!\n");
+      //Serial.print("\n----------------------------------\n");
+      //Serial.print("read_Error!\n");
       break;
     }
   }
