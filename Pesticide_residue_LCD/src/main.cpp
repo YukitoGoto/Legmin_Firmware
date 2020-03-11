@@ -2,14 +2,15 @@
 #include<Arduino.h>
 #include <EEPROM.h>
 #include <Wire.h>
-#include <ST7032_asukiaaa.h>
+#include <M5Stack.h>
 
 #include <ros.h>
 #include <std_msgs/Float32.h>
 
-ST7032_asukiaaa lcd;
-
-#define Vout_pin 21
+#define Vout_pin 35
+#define Pressure_pin 36
+#define Flowmeter_pin 5
+#define Pomp_pin 16
 #define SW_pin 15
 #define SW_length_short 1000
 #define SW_length_long 100000
@@ -54,10 +55,8 @@ void read_data(int adr);                 //read_data:EEPROMから4バイトご�
 
 void setup() {
   //Serial.begin(9600);
-  // LCD表示領域設定(8桁, 2行)
-  lcd.begin(8, 2);
-  // コントラスト設定(0〜63)
-  lcd.setContrast(30);
+  M5.begin();
+  M5.Lcd.setTextSize(2);
   pinMode(SW_pin,INPUT_PULLUP);
 
   //諸変数の初期化
@@ -77,12 +76,6 @@ void setup() {
 void loop() {
   sw = digitalRead(SW_pin);
 
-  while(true){
-    weight_msg.data = W;
-    weight_pub.publish(&weight_msg);
-    nh.spinOnce();
-  }
-
   //スイッチが押されたらRE_Vout_offsetを呼び出す。0[kg]調整される。
   if(sw == LOW){
     long int sw_cnt = 0;
@@ -92,11 +85,9 @@ void loop() {
     //Serial.print("Vout_offset[V] = ");  Serial.println(Vout_offset,4);
 
     //1行目
-    lcd.setCursor(0,0);
-    lcd.print("offset!");
-    //2行目
-    lcd.setCursor(0,1);
-    lcd.print("reset!");
+    M5.Lcd.setCursor(0,0);
+    M5.Lcd.println("offset!");
+    M5.Lcd.println("reset!");
     
     delay(1000);
   }
@@ -108,28 +99,27 @@ void loop() {
     //Serial.print("W[Kg] = "); Serial.println(W,4);
     
     //1行目
-    lcd.setCursor(0,0);
-    lcd.print("Nowvalue");
+    M5.Lcd.setCursor(0,0);
+    M5.Lcd.println("Nowvalue");
     //2行目
-    lcd.setCursor(0,1);//表示の統一を図るための処理
-    lcd.println(" ");
+    M5.Lcd.println(" ");
     if(W < 10.0){
       if(W <= 5.0){
       //led反転
       }
-      lcd.setCursor(1,1);
-      (W < 0) ? lcd.println(0.0,2) : lcd.println(W,2);
+      (W < 0) ? M5.Lcd.print(0.0,2) : M5.Lcd.print(W,2);
     }
     else{
-      lcd.setCursor(1,1);
-      lcd.println(W,1);
+      M5.Lcd.print(W,1);
     }
-    lcd.setCursor(5,1);
-    lcd.print("[L]");
+    M5.Lcd.print("[L]");
+
+    weight_msg.data = W;
+    weight_pub.publish(&weight_msg);
     
     delay(200);
   }
-  
+  nh.spinOnce();  
 }
 
 void Read_Vout(int Read_cnt){
