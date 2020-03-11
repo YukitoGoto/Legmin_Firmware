@@ -2,14 +2,14 @@
 #include<Arduino.h>
 #include <EEPROM.h>
 #include <Wire.h>
-#include <ST7032.h>
+#include <ST7032_asukiaaa.h>
 
 #include <ros.h>
 #include <std_msgs/Float32.h>
 //Leonardo互換機ではひつよう
 #define USE_USBCON
 
-ST7032 lcd;
+ST7032_asukiaaa lcd;
 
 #define Vout_pin 21
 #define SW_pin 15
