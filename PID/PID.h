@@ -6,12 +6,12 @@ class PID{
 public:
 
     /*
-    Kp 比例ゲイン
-    Ki 積分ゲイン
-    Kd 微分ゲイン
-    dt 制御周期
-    sp 目標値
-    pv 現在値（現在の入力値）
+    Kp:比例ゲイン
+    Ki:積分ゲイン
+    Kd:微分ゲイン
+    dt:制御周期
+    sp:目標値
+    pv:現在値（現在の入力値）
     */
 
     PID(float Kp, float Ki, float Kd);                  //コンストラクタでゲイン設定
