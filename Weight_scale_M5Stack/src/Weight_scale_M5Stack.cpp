@@ -1,11 +1,10 @@
-//開発版・デバック用
 #include "Weight_scale_M5Stack.h"
 
-Weight_M5::Weight_M5(int Signal_Pin = Default_signal_pin,int Lcd_text_size = Default_lcd_text_size){
+Weight_M5::Weight_M5(int Signal_Pin,int Lcd_text_size){
   //諸変数の初期化
   Signal_Pin_ = Signal_Pin,Lcd_text_size_ = Lcd_text_size;
   Vout_ = 0.0,Weight_ = 0.0;
-  Lcdflag = false;
+  btn_a = false;
 }
 
 void Weight_M5::begin(void) {
@@ -29,19 +28,19 @@ void Weight_M5::update_val(void) {
   if(M5.BtnA.isPressed())
   {
     Re_Vout_offset();
-    Lcdflag = true;
+    btn_a = true;
   }
   else{
     Read_Vout(Sample_cnt_);
     Lead_W(Vout_);
-    Lcdflag = false;
+    btn_a = false;
   }
 }
 
 void Weight_M5::update_lcd(void){
   M5.Lcd.setCursor(0,0);
-  if(Lcdflag){
-    Lcdflag = false;
+  if(btn_a){
+    btn_a = false;
     //1行目
     M5.Lcd.println("offset!");
     //2行目
@@ -50,14 +49,13 @@ void Weight_M5::update_lcd(void){
     delay(1000);
   }
   else{
-    Lcdflag = true;
     //1行目
     M5.Lcd.println("Nowvalue");
     //2行目
     M5.Lcd.print(" ");
     if(Weight_ < 10.0){
       if(Weight_ <= 5.0){
-      //led反転
+      //背景色変更（未実装）
       }
       (Weight_ < 0) ? M5.Lcd.print(0.0,2) : M5.Lcd.print(Weight_,2);
     }
@@ -65,8 +63,6 @@ void Weight_M5::update_lcd(void){
       M5.Lcd.print(Weight_,1);
     }
     M5.Lcd.println("[L]");
-
-    delay(200);
   }
 }
 
