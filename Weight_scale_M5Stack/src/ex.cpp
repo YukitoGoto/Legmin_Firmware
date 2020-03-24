@@ -1,3 +1,4 @@
+//サンプルコード
 #include <Arduino.h>
 
 void setup() {
