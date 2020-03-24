@@ -20,7 +20,7 @@
 /*---Analog_Max_Vout:Analog値がAnalog_Maxの時の出力電圧[v] promicro:4.56[v] esp32:3.30[v]---*/
 
 #define Analog_Max 4095.0
-/*---Analog値がMaxの時の値 promicro:1024.0 esp32:4059.0---*/
+/*---Analog値がMaxの時の値 promicro:1023.0 esp32:4095.0---*/
 
 #define Dv_Dw 0.01780
 //ゴトウユキトが手動で調整
@@ -45,8 +45,8 @@ float dv_dw;                  //dv_dw:グラフの傾き自動調整される予
 void Read_Vout(int Read_cnt);            //Read_Vout:出力電圧測定関数 Read_cnt:読み取り回数
 void Lead_W(float Vout_);                //Lead_W:出力電圧を重さに変換する関数 Vout:出力電圧[v]
 void Re_Vout_offset(void);               //Re_Vout_offset:オフセットを求める関数。求めた値をEEPROMに格納する。0[kg]調整に使用する。
-void write_data(int adr);                //write_data:EEPROMに4バイトごとに書き込む adr:アドレス
-void read_data(int adr);                 //read_data:EEPROMから4バイトごとに読み込む
+void write_data(int adr);                //write_data:EEPROMに1バイトごとに書き込む adr:アドレス
+void read_data(int adr);                 //read_data:EEPROMから1バイトごとに読み込む
 
 void setup() {
   //Serial.begin(9600);
