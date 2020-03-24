@@ -1,33 +1,30 @@
-//製品版
+//開発版・デバック用
 #include<Arduino.h>
 #include <EEPROM.h>
-#include <Wire.h>
 #include <M5Stack.h>
 
 #include <ros.h>
 #include <std_msgs/Float32.h>
 
-#define Vout_pin 35
-#define Pressure_pin 36
-#define Flowmeter_pin 5
-#define Pomp_pin 16
+#define Vout_pin 35     //analogpin
+#define Pressure_pin 36 //analogpin
+#define Flowmeter_pin 5 //digitalpin
+#define Pomp_pwmpin 17  //pwmpin
 #define Read_cnt_ 1000
-#define Analog_Max 4095.0 //Analog値がMaxの時の値 promicro:1024.0 esp32:4059.0
 
 #define EEP_ADRS_OFF 0    //offset用のアドレス:0~3
 #define EEP_SIZE 4        //EEPROMで扱うデータのサイズ
 
 //個体毎に調整が必要なdefineを以下に示す。
-#define Analog_Max_Vout 3.50
-/*---Analog_Max_Vout:Analog値がAnalog_Maxの時の出力電圧[v] promicro:4.56[v] esp32:3.50[v]---*/
+#define Analog_Max_Vout 3.30
+/*---Analog_Max_Vout:Analog値がAnalog_Maxの時の出力電圧[v] promicro:4.56[v] esp32:3.30[v]---*/
 
-//#define Dv_Dw 0.02362
-//重りの場合
-//#define Dv_Dw 0.028344
-//水の場合
-#define Dv_Dw 0.02400
+#define Analog_Max 4095.0
+/*---Analog値がMaxの時の値 promicro:1024.0 esp32:4059.0---*/
+
+#define Dv_Dw 0.01780
 //ゴトウユキトが手動で調整
-/*---Dv_Dw:dv_dwの初期値---*/
+/*---Dv_Dw:電圧を重さに変換する定数 promicro:0.02400 esp32:0.01780---*/
 
 typedef union{//前回起動時のデータを共用体に記憶しておく。
   float all_data;
@@ -122,7 +119,7 @@ void loop() {
     
     delay(200);
   }
-  nh.spinOnce();  
+  nh.spinOnce();
 }
 
 void Read_Vout(int Read_cnt){
