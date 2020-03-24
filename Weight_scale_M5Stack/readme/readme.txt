@@ -23,4 +23,4 @@ M5Stack.hを利用しています。platform.iniに"lib_deps = M5Stack"を追加
 EEPROM.hを利用しています。内部のEEPROMを本プログラムと別に使用する場合、使用するアドレスが被らないように"EEP_ADRS_OFF"を適宜書き換えてください。
 ex.cpp内のROS関連のコードを実行する場合、platform.iniに"lib_deps = rosserial_arduino"を追加してください。
 
-ver.2020/03/24
+ver.2020/03/25
