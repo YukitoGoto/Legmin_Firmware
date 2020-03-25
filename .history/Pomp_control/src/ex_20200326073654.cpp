@@ -15,7 +15,7 @@ void control_val(void){
 }
 
 void setup() {
-  //割込み処理を行う。
+  //割込み処理
   attachInterrupt(digitalPinToInterrupt(Default_Flowmeter_pin), onRising, FALLING);
   ctr.attach(Control_interval,control_val);
 }
