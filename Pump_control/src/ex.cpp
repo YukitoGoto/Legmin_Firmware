@@ -13,10 +13,9 @@ void control_val(void){
 }
 
 void setup() {
-  attachInterrupt(digitalPinToInterrupt(ex.Flowmeter_Signal_Pin), onRising, FALLING);
+  attachInterrupt(digitalPinToInterrupt(Pomp_pwmch), onRising, FALLING);
   ctr.attach(Control_interval,control_val);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
 }

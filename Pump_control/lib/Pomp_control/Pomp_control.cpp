@@ -1,24 +1,24 @@
 #include "Pomp_control.h"
 
-Pomp_control::Pomp_control(int Flowmeter_Signal_Pin_,int Pressure_Signal_Pin_,int Pomp_Pwm_Pin_){
+Pomp_control::Pomp_control(void){
   //諸変数の初期化
-  Flowmeter_Signal_Pin = Flowmeter_Signal_Pin_,Pressure_Signal_Pin = Pressure_Signal_Pin_,Pomp_Pwm_Pin = Pomp_Pwm_Pin_;
   shutoff = false,TargetLmp = 0.0,CurrentLmp = 0.0,CurrentPress = 0.0;
   pulseCounter = 0.0,CurrentHz = 0.0,DT = 0.0,Vout = 0.0;
 }
 
 void Pomp_control::begin(void) {
-  //PIDmoterクラスのインスタンス化
-  moter = new PID(Kp,Ki,Kd); 
+  //PIDmotorクラスのインスタンス化
+  motor = new PID(Kp,Ki,Kd); 
+
   //割込みセットアップ
-  pinMode(Flowmeter_Signal_Pin, INPUT_PULLUP);
+  pinMode(Flowmeter_pin, INPUT_PULLUP);
 
   //PID制御セットアップ
-  moter->setOutputLimits(DT_MIN,DT_MAX);
+  motor->setOutputLimits(DT_MIN,DT_MAX);
 
   //ポンプ制御に用いるPWMセットアップ
   ledcSetup(Pomp_pwmch,Pomp_pwmHz,Pomp_pwmrenge);
-  ledcAttachPin(Pomp_Pwm_Pin,Pomp_pwmch);
+  ledcAttachPin(Pomp_pwmpin,Pomp_pwmch);
 }
 
 void Pomp_control::update_power(void){
@@ -33,7 +33,7 @@ void Pomp_control::control_val(void){
   getCurrentLpm();
   Lead_P();
   //求めた値からPID制御して、操作量としてDT(デューティー比)を求める。ポンプ内のモーターへ反映。
-  DT = moter->update_val(TargetLmp,CurrentLmp,Control_interval);
+  DT = motor->update_val(TargetLmp,CurrentLmp,Control_interval);
   //シャットオフ圧力を超えていたら、DTを零にしてモーターを停止する。
   if(shutoff){
     DT = 0.0;
@@ -57,7 +57,7 @@ void Pomp_control::Lead_P(void){
   float Vout_sum = 0.0;
   
   for(cnt = 0;cnt < Sample_cnt;cnt++){
-    Vout_val = analogRead(Pressure_Signal_Pin);
+    Vout_val = analogRead(Pressure_pin);
     Vout = (float)Vout_val * Analog_Max_Vout / Analog_Max;
     Vout_sum += Vout;
   }
