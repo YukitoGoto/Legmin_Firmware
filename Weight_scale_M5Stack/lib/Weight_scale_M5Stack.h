@@ -41,7 +41,7 @@ private:
 
     int Lcd_text_size_;                     //Lcd_text_size_:LCDに表示するテキストのサイズ
 
-    float Vout_;                            //Vout:出力電圧[v]
+    float Vout_;                            //Vout_:Signal_Pin_の出力電圧[v]
     
     float Vout_offset_;                     //Vout_offset:体重計起動時のVoutの値(オフセット)  
 
