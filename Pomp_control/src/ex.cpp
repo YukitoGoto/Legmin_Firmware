@@ -1,3 +1,4 @@
+//動作に最低限必要なコード
 #include <Arduino.h>
 #include "Pomp_control.h"
 
