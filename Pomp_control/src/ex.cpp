@@ -14,7 +14,7 @@ void control_val(void){
 }
 
 void setup() {
-  attachInterrupt(digitalPinToInterrupt(Pomp_pwmch), onRising, FALLING);
+  attachInterrupt(digitalPinToInterrupt(Pomp_pwmpin), onRising, FALLING);
   ctr.attach(Control_interval,control_val);
 }
 
