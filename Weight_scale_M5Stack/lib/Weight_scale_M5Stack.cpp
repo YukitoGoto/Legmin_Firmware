@@ -46,6 +46,7 @@ void Weight_M5::update_lcd(void){
     //2行目
     M5.Lcd.println("reset!");
     
+    //lcd表示を行うための待機 適宜コメントアウトしてもらって構いません。
     delay(1000);
   }
   else{
