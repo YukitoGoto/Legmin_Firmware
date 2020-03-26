@@ -58,7 +58,7 @@ void Weight_M5::update_lcd(void){
       if(Weight_ <= 5.0){
       //背景色変更（未実装）
       }
-      (Weight_ < 0) ? M5.Lcd.print(0.0,2) : M5.Lcd.print(Weight_,2);
+      M5.Lcd.print(Weight_,2);
     }
     else{
       M5.Lcd.print(Weight_,1);
@@ -81,7 +81,8 @@ void Weight_M5::Read_Vout(int Sample_cnt){
 }
 
 void Weight_M5::Lead_W(float Vout){
-  Weight_ = (Vout_ - Vout_offset_) / Dv_Dw;
+  Weight_ = (Vout - Vout_offset_) / Dv_Dw;
+  (Weight_ < 0) ? Weight_ = 0.0 : Weight_ = Weight_;
 }
 
 void Weight_M5::Re_Vout_offset(void){

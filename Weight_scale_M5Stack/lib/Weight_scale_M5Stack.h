@@ -20,42 +20,26 @@
 #define Default_lcd_text_size 4 //Lcd_text_sizeのデフォルト値
 
 class Weight_M5{
-
+    
 public:
-
     Weight_M5(int Signal_Pin = Default_signal_pin,int Lcd_text_size = Default_lcd_text_size);//Signal_Pin:アンプからのアナログ信号を読み取るピン Lcd_text_size:LCDに表示するテキストのサイズ
-
     void begin(void);                       //begin:setup関数内で必ず実行すること! M5Stackの初期化やEEPROMの初期化を行う。
-
     void update_val(void);                  //update_val:Weight_ Vout_offset_ 等の更新
-
     void update_lcd(void);                  //update_lcd:LCDの内容を現在の値で更新
-
     float Weight_;                          //Weight_:重さ[kg]
 
 private:
-
     bool btn_a;                             //btn_a:ボタンAの状態 LCD制御に使用 
-
     int Signal_Pin_;                        //Signal_Pin_:アンプからのアナログ信号を読み取るピン
-
     int Lcd_text_size_;                     //Lcd_text_size_:LCDに表示するテキストのサイズ
-
     float Vout_;                            //Vout_:Signal_Pin_の出力電圧[v]
-    
     float Vout_offset_;                     //Vout_offset:体重計起動時のVoutの値(オフセット)  
-
     void Read_Vout(int Sample_cnt);         //Read_Vout:出力電圧測定関数 Sample_cnt:読み取り回数
-    
     void Lead_W(float Vout);                //Lead_W:出力電圧を重さに変換する関数 Vout:出力電圧[v]
-    
     void Re_Vout_offset(void);              //Re_Vout_offset:オフセットを求める関数。求めた値をEEPROMに格納する。0[kg]調整に使用する。
-    
     void write_data(int adr);               //write_data:EEPROMに4バイトごとに書き込む adr:アドレス
-    
     void read_data(int adr);                //read_data:EEPROMから4バイトごとに読み込む
-    
-    union{                                  //ROM:Vout_offset用の共用体
+        union{                                  //ROM:Vout_offset用の共用体
         float all_data;
         uint8_t part_data[EEP_SIZE];
     }ROM;
