@@ -51,6 +51,8 @@ void Pomp_control::onRising(void) {
 void Pomp_control::getCurrentLpm(void) {
   CurrentHz = (double) pulseCounter * (1.0 / Control_interval);
   CurrentLpm = (float) CurrentHz / DIV_NUMBER_FOR_LPM_FROM_HZ;
+  if(CurrentLpm < 0.0)
+    CurrentLpm = 0.0;
   pulseCounter = 0;
 }
 
@@ -65,7 +67,9 @@ void Pomp_control::Lead_P(void){
   }
   
   Vout = Vout_sum / (float)Sample_cnt;              //Sample_cnt回測った電圧の平均値を採用する。
-  CurrentPress = (Vout - Vout_offset) / Dv_Dp;      //出力電圧から現在の圧力を求める。  
+  CurrentPress = (Vout - Vout_offset) / Dv_Dp;      //出力電圧から現在の圧力を求める。
+  if(CurrentPress < 0.0)
+    CurrentPress = 0.0;  
   //シャットオフ圧力を超えていたら有効にする。
   if(CurrentLpm > Max_pomp_p)
     shutoff = true;
