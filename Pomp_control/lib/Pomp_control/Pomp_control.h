@@ -10,9 +10,9 @@
 #define Max_targetLpm 9.5  //流量の最大値[l/m]
 
 //PID制御に用いる定数(各ゲイン:Ki~Kd 出力する操作量の幅:DT_MIN~DT_MAX) ゲイン調整時に水が空気を含まないようにする。
-#define Kp 0.02
-#define Ki 0.1
-#define Kd 0.005
+#define Kp 0.07
+#define Ki 0.0
+#define Kd 0.0
 #define DT_MAX 1.0
 #define DT_MIN 0.0
 

@@ -1,4 +1,5 @@
 #include "Pomp_control.h"
+#define DEBUG_POMP
 
 Pomp_control::Pomp_control(int Pomp_pwmpin_,int Flowmeter_pin_,int Pressure_pin_){
   //ピン設定
@@ -10,7 +11,7 @@ Pomp_control::Pomp_control(int Pomp_pwmpin_,int Flowmeter_pin_,int Pressure_pin_
 
 void Pomp_control::begin(void) {
   //PIDmotorクラスのインスタンス化
-  motor = new PID(Kp,Ki,Kd); 
+  motor = new PID(Kp,Ki,Kd);
 
   //割込みセットアップ
   pinMode(Flowmeter_pin, INPUT_PULLUP);
@@ -38,8 +39,18 @@ void Pomp_control::control_val(void){
   DT = motor->update_val(TargetLpm,CurrentLpm,Control_interval);
   //シャットオフ圧力を超えていたら、DTを零にしてモーターを停止する。
   if(shutoff){
+    Serial.println("shutoff");
     DT = 0.0;
     shutoff = false;
+  }
+  else{
+    #ifdef DEBUG_POMP
+    Serial.println("CurrentPress " + String(CurrentPress) + "[MPa]");
+    Serial.println("CurrentLpm: " + String(CurrentLpm) + "[l/m]");
+    Serial.println("TargetLpm: " + String(TargetLpm) + "[l/m]");
+    Serial.println("DT:" + String(DT));
+    Serial.println("--------------------------------------");
+    #endif //DEBUG_POMP
   }
   update_power();
 }
@@ -65,12 +76,11 @@ void Pomp_control::Lead_P(void){
     Vout = (float)Vout_val * Analog_Max_Vout / Analog_Max;
     Vout_sum += Vout;
   }
-  
   Vout = Vout_sum / (float)Sample_cnt;              //Sample_cnt回測った電圧の平均値を採用する。
   CurrentPress = (Vout - Vout_offset) / Dv_Dp;      //出力電圧から現在の圧力を求める。
   if(CurrentPress < 0.0)
-    CurrentPress = 0.0;  
+    CurrentPress = 0.0;
   //シャットオフ圧力を超えていたら有効にする。
-  if(CurrentLpm > Max_pomp_p)
+  if(CurrentPress > Max_pomp_p)
     shutoff = true;
 }
