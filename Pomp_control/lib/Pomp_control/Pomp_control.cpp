@@ -1,5 +1,4 @@
 #include "Pomp_control.h"
-#define DEBUG_POMP
 
 Pomp_control::Pomp_control(int Pomp_pwmpin_,int Flowmeter_pin_,int Pressure_pin_){
   //ピン設定
@@ -39,18 +38,8 @@ void Pomp_control::control_val(void){
   DT = motor->update_val(TargetLpm,CurrentLpm,Control_interval);
   //シャットオフ圧力を超えていたら、DTを零にしてモーターを停止する。
   if(shutoff){
-    Serial.println("shutoff");
     DT = 0.0;
     shutoff = false;
-  }
-  else{
-    #ifdef DEBUG_POMP
-    Serial.println("CurrentPress " + String(CurrentPress) + "[MPa]");
-    Serial.println("CurrentLpm: " + String(CurrentLpm) + "[l/m]");
-    Serial.println("TargetLpm: " + String(TargetLpm) + "[l/m]");
-    Serial.println("DT:" + String(DT));
-    Serial.println("--------------------------------------");
-    #endif //DEBUG_POMP
   }
   update_power();
 }
