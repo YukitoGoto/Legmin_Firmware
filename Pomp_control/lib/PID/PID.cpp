@@ -1,8 +1,4 @@
 #include "PID.h"
-#define DEBUG_PID
-#ifdef DEBUG_PID
-#include <Arduino.h>
-#endif  //DEBUG_PID
  
 PID::PID(float Kp, float Ki, float Kd){
     Kp_ = Kp; Ki_ = Ki; Kd_ = Kd;
@@ -50,12 +46,6 @@ float PID::update_val(float sp,float pv,float dt){
     }
     else{
         Output_ = Kp_ * pError_ + Ki_ * iError_ + Kd_ * dError_;
-        #ifdef DEBUG_PID
-        Serial.println("Output: " + String(Output_));
-        Serial.println("Kp*pError: " + String(Kp_ * pError_));
-        Serial.println("Ki*iError: " + String(Ki_ * iError_));
-        Serial.println("Kd*dError: " + String(Kd_ * dError_));
-        #endif  //DEBUG_PID
     }
 
     if(Output_ > outMax_)
