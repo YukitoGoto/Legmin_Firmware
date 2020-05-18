@@ -35,6 +35,7 @@ void loop() {
     Serial.println("TargetLpm " + String(ex.TargetLpm) + "[l/m]");
     Serial.println("CurrentLpm " + String(ex.CurrentLpm) + "[l/m]");
     Serial.println("CurrentPress " + String(ex.CurrentPress) + "[MPa]");
+    Serial.println("----------------------------");
     #endif  //DEBUG
     msec = millis();
   }
