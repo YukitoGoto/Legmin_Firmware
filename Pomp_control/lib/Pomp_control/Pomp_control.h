@@ -43,7 +43,6 @@ class Pomp_control{
 public:
     Pomp_control(int Pomp_pwmpin_ = Default_Pomp_pwmpin,int Flowmeter_pin_ = Default_Flowmeter_pin,int Pressure_pin_ = Default_Pressure_pin);
     void begin(void);
-    int Pomp_pwmpin,Flowmeter_pin,Pressure_pin;
     float TargetLpm;                    //TargetLpm:流量の目標値[l/m] 0.0~Max_targetLpm[l/m]までを代入する。
     float CurrentLpm;                   //CurrentLpm:現在の流量[l/m]
     float CurrentPress;                 //CurrenrPress:現在の圧力[Mpa]
@@ -51,6 +50,7 @@ public:
     void control_val(void);             //呼び出し禁止です。
 
 private:
+    int Pomp_pwmpin,Flowmeter_pin,Pressure_pin;
     PID *motor;                         //PIDmotorクラス
     bool shutoff;
     unsigned long pulseCounter;
