@@ -10,16 +10,16 @@
 #define Max_targetLpm 9.5  //流量の最大値[l/m]
 
 //PID制御に用いる定数(各ゲイン:Ki~Kd 出力する操作量の幅:DT_MIN~DT_MAX) ゲイン調整時に水が空気を含まないようにする。
-#define Kp 0.08
-#define Ki 0.01
-#define Kd 0.0
+#define Kp 0.02
+#define Ki 0.1
+#define Kd 0.005
 #define DT_MAX 1.0
 #define DT_MIN 0.0
 
 //ポンプ制御に用いるPWMピン及び定数
 #define Pomp_pwmch 0            //pwmチャンネル
 #define Pomp_pwmHz 5000         //pwm周波数
-#define Default_Pomp_pwmpin 0  //pwmpin (0,2,4,12,13,14,15,25,26,27,32,33)のいずれかに設定する。
+#define Default_Pomp_pwmpin 15  //pwmpin (0,2,4,12,13,14,15,25,26,27,32,33)のいずれかに設定する。
 #define Pomp_pwmrenge 12        //pwmの分解能[bit] 8[bit]:0~255でDT比を設定する。
 #define Pomp_pwmmax 4095        //pwmの最大値 8[bit]:255 12[bit]:4095
 
@@ -43,6 +43,7 @@ class Pomp_control{
 public:
     Pomp_control(int Pomp_pwmpin_ = Default_Pomp_pwmpin,int Flowmeter_pin_ = Default_Flowmeter_pin,int Pressure_pin_ = Default_Pressure_pin);
     void begin(void);
+    int Pomp_pwmpin,Flowmeter_pin,Pressure_pin;
     float TargetLpm;                    //TargetLpm:流量の目標値[l/m] 0.0~Max_targetLpm[l/m]までを代入する。
     float CurrentLpm;                   //CurrentLpm:現在の流量[l/m]
     float CurrentPress;                 //CurrenrPress:現在の圧力[Mpa]
@@ -50,7 +51,6 @@ public:
     void control_val(void);             //呼び出し禁止です。
 
 private:
-    int Pomp_pwmpin,Flowmeter_pin,Pressure_pin;
     PID *motor;                         //PIDmotorクラス
     bool shutoff;
     unsigned long pulseCounter;
