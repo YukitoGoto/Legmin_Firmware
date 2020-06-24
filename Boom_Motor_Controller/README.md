@@ -3,7 +3,7 @@ esp32上でモーターを制御します。リミットスイッチを取り付
 # Circuit
 スイッチのチャタリング防止として、各**Digital信号入力ピン**は以下の様に接続されます。
 
-![Chattering_prevention](https://drive.google.com/file/d/1TQvRBxBL7_QI3G2pYQ5AR3BIvuK8QSUm/view?usp=sharing)
+![Chattering_prevention](C:\Users\Yukito\Desktop\legmin\firmware\Project\Boom_Motor_Controller\circuits\Chattering_prevention.png)
 
 ## Vcc
 電源電圧です。esp32では3.3[v]です。
