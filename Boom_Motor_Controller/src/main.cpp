@@ -51,12 +51,12 @@ void Upd_SW_Status(int *limit,int *mode,int *rotation){
     *mode = -1;    //エラー
   }
   if((LOW == digitalRead(CCW_SW_PIN)) && (HIGH == digitalRead(CW_SW_PIN))){
-    rotation = LOW;   //CCW
+    *rotation = LOW;   //CCW
   }
   else if((HIGH == digitalRead(CCW_SW_PIN)) && (LOW == digitalRead(CW_SW_PIN))){
-    rotation = HIGH;  //CW
+    *rotation = HIGH;  //CW
   }
   else{
-    rotation = -1;    //入力無し
+    *rotation = -1;    //入力無し
   }
 }
