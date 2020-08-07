@@ -2,7 +2,13 @@
 PS4コントローラ[DUALSHOCK™4](https://pur.store.sony.jp/ps4/lineup/ps4_controller/)をESP32で使うための情報をまとめます。
 
 # ライブラリのインストール
-
+## ZIPファイルのダウンロード
+[PS4-esp32（GitHub）](https://github.com/aed3/PS4-esp32)にアクセスします。リポジトリをZIPファイルでダウンロードします。その後、ZIPファイルを展開してください。
+```
+Code(緑色のボタン) --> Download ZIP --> すべて展開
+```
+## プロジェクトの作成
+PlatformIoからプロジェクトを作成します。
 # MACアドレスの書き換え
 
 # ペアリングの実効
