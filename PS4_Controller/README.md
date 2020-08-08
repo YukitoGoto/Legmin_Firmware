@@ -1,5 +1,5 @@
 # PS4_Controller
-PS4コントローラ[DUALSHOCK™4](https://pur.store.sony.jp/ps4/lineup/ps4_controller/)をESP32で使うための情報をまとめます。`PlatformIo`を使用します。
+PS4コントローラ[DUALSHOCK™4](https://pur.store.sony.jp/ps4/lineup/ps4_controller/)をESP32で使うための情報をまとめます。[PlatformIo](https://platformio.org/)を使用します。
 
 # ライブラリのインストール
 ## ZIPファイルのダウンロード
@@ -49,11 +49,48 @@ lib_extra_dirs = ../lib
 これでライブラリが読み込まれるようになります。
 
 `platformio.ini`に関する詳細な設定方法は[こちら](https://docs.platformio.org/en/latest/projectconf/section_env_library.html)をご覧ください。
-# MACアドレスの書き換え
+# MACアドレスの登録
+## 原理
+esp32とDUALSHOCK™4がペアリングするには、**esp32のMACアドレスをDUALSHOCK™4に登録する**必要があります。
+## esp32のMACアドレスを取得
+`src/main.cpp`を次のように書き換え実行します。
+```
+#include <Arduino.h>
+#include "esp_system.h"
 
-# ペアリングの実効
+void setup() {
+    //baudrate = 9600
+    Serial.begin(9600);
+}
+
+void loop() {
+    // Get MAC address for WiFi station
+    uint8_t baseMac[6];
+    esp_read_mac(baseMac, ESP_MAC_WIFI_STA);
+    char baseMacChr[18] = {0};
+    sprintf(baseMacChr, "%02X:%02X:%02X:%02X:%02X:%02X", baseMac[0], baseMac[1], baseMac[2], baseMac[3], baseMac[4], baseMac[5]);
+
+    Serial.print("\nMAC: ");
+    Serial.println(baseMacChr);
+
+    //5秒ごとにMACアドレスを表示
+    delay(5000);
+}
+```
+シリアルモニタにMACアドレスが表示されます。**得られたMACアドレスはメモして置いてください。**
+## DUALSHOCK™4に登録
+[SixaxisPairTool](https://dancingpixelstudios.com/sixaxis-controller/sixaxispairtool/)にアクセスします。インストーラー（SixaxisPairToolSetup-0.x.x.exe）をダウンロード、起動して、適当に次へ次へ...とやっていきます。
+```
+いづれかのOS（Windows/Linux/MAC OSX）のDownload linkを選択 --> インストーラーを起動 --> 次へ次へ
+```
+SixaxisPairToolを起動します。DUALSHOCK™4をPCに接続します。ドライバーの自動インストール後に、次のような画面になります。
+
+![ ](https://github.com/YukitoGoto/Legmin_Firmware/blob/master/PS4_Controller/picture/macaddr.png)
+# ペアリングの実行
 
 # 資料
-[参考サイト](https://techtutorialsx.com/2020/02/15/esp32-connecting-a-ps4-controller/)
+[参考サイト（DUALSHOCK™4）](https://techtutorialsx.com/2020/02/15/esp32-connecting-a-ps4-controller/)
 
 [PS4-esp32（GitHub）](https://github.com/aed3/PS4-esp32)
+
+[参考サイト（esp32-MACアドレス）](https://mobile.k05.biz/e/2018/12/esp32-mac-addr.html)
