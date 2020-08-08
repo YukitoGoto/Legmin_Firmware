@@ -84,10 +84,47 @@ void loop() {
 いづれかのOS（Windows/Linux/MAC OSX）のDownload linkを選択 --> インストーラーを起動 --> 次へ次へ
 ```
 SixaxisPairToolを起動します。DUALSHOCK™4をPCに接続します。ドライバーの自動インストール後に、次のような画面になります。
+先ほど得られたMACアドレスを登録しましょう！
 
 ![ ](https://github.com/YukitoGoto/Legmin_Firmware/blob/master/PS4_Controller/picture/macaddr.png)
-# ペアリングの実行
 
+`Current Master`:現在登録されているMACアドレスです。
+
+`Change master`:新たに登録するMACアドレスを正確に記入して、`Update`を押すと登録されます。
+```
+SixaxisPairToolを起動 --> DUALSHOCK™4をPCに接続（usb）--> ドライバインストール（自動） --> MACアドレス登録
+```
+# ペアリングの実行
+`src/main.cpp`を次のように書き換え実行します。esp32のmacアドレスの部分は皆さんのものに書き換えてください。
+```
+#include <Arduino.h>
+#include <PS4Controller.h>
+
+//your esp32's mac addr
+char esp32_mac_addr[] = "30:ae:a4:08:01:90";
+
+void setup() {
+    Serial.begin(9600);
+    PS4.begin(esp32_mac_addr);
+    Serial.println("Initialization ready!");
+}
+
+void loop() {
+    if(PS4.isConnected()){
+        Serial.println("Controller connected!");
+    }else{
+        Serial.println("Searching Controller...");
+    }
+    delay(3000);
+}
+```
+`ペアリング`:DUALSHOCK™4の`ps4ボタン`を押す。DUALSHOCK™4が白色に点滅後に点灯すればペアリング完了！
+
+`ペアリング切断`:マイコンの`リセットボタン`を押す。しばらくすると、DUALSHOCK™4が消灯する。
+
+**ここまでお疲れ様でした！！**
+# 各種関数
+**工事中**
 # 資料
 [参考サイト（DUALSHOCK™4）](https://techtutorialsx.com/2020/02/15/esp32-connecting-a-ps4-controller/)
 
