@@ -47,6 +47,8 @@ lib_extra_dirs = ../lib
     :    |---PS4-esp32-master
 ```
 これでライブラリが読み込まれるようになります。
+
+`platformio.ini`に関する詳細な設定方法は[こちら](https://docs.platformio.org/en/latest/projectconf/section_env_library.html)をご覧ください。
 # MACアドレスの書き換え
 
 # ペアリングの実効
