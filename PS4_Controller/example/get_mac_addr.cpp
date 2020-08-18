@@ -20,3 +20,9 @@ void loop() {
     //10秒ごとにMACアドレスを表示
     delay(10000);
 }
+/*
+[Bluetooth] Mac Address = 30:AE:A4:08:01:92
+[WiFi Station] Mac Address = 30:AE:A4:08:01:90
+[WiFi Softap] Mac Address = 30:AE:A4:08:01:91
+[Ethernet] Mac Address = 30:AE:A4:08:01:93
+*/
