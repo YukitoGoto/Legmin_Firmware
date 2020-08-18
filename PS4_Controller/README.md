@@ -123,6 +123,8 @@ void loop() {
 `ペアリング切断`:マイコンの`リセットボタン`を押す。しばらくすると、DUALSHOCK™4が消灯する。
 
 **ここまでお疲れ様でした！！**
+
+![](https://github.com/YukitoGoto/Legmin_Firmware/blob/master/PS4_Controller/picture/connected_done.png)
 # 各種関数
 **工事中**
 # 資料
