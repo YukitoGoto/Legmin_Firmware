@@ -1,11 +1,12 @@
 #include <Arduino.h>
 #include <PS4Controller.h>
 
-char esp32_mac_addr[] = "30:ae:a4:08:01:90";
+//your esp32 bluetooth mac addr
+char esp32_btmac_addr[] = "30:ae:a4:08:01:90";
 
 void setup() {
     Serial.begin(9600);
-    PS4.begin(esp32_mac_addr);
+    PS4.begin(esp32_btmac_addr);
     Serial.println("Initialization ready!");
 }
 
@@ -15,5 +16,5 @@ void loop() {
     }else{
         Serial.println("Searching Controller...");
     }
-    delay(3000);
+    delay(1000);
 }
