@@ -125,6 +125,12 @@ void loop() {
 **ここまでお疲れ様でした！！**
 
 ![](https://github.com/YukitoGoto/Legmin_Firmware/blob/master/PS4_Controller/picture/connected_done.png)
+# 開発記録
+## 2020/08/07
+上記内容でペアリング完了！
+## 2020/08/18
+上記内容で何故かペアリングできなくなった！
+
 # 各種関数
 **工事中**
 # 資料
