@@ -4,4 +4,4 @@
 
 [参考サイト(ESP32をWiFiにつなげる)](https://qiita.com/hilucky/items/3e74d28c03d71f2f3caa)
 
-[arduino-esp32(GitHub)](https://github.com/espressif/arduino-esp32)
+[WiFi library(arduino)](https://www.arduino.cc/en/Reference/WiFi)
