@@ -1,6 +1,8 @@
 # PS4_Controller
 PS4コントローラ[DUALSHOCK™4](https://pur.store.sony.jp/ps4/lineup/ps4_controller/)をESP32で使うための情報をまとめます。[PlatformIo](https://platformio.org/)を使用します。
 
+# code
+[example](https://github.com/YukitoGoto/Legmin_Firmware/tree/master/PS4_Controller/example)にコードがあります。実行したいコードを[src](https://github.com/YukitoGoto/Legmin_Firmware/tree/master/PS4_Controller/src)に移してから実行してください。
 # ライブラリのインストール
 ## ZIPファイルのダウンロード
 [PS4-esp32（GitHub）](https://github.com/aed3/PS4-esp32)にアクセスします。リポジトリをZIPファイル(`PS4-esp32-master.zip`)でダウンロードします。その後、展開してください。
@@ -134,9 +136,9 @@ void loop() {
 別のコントローラで試すと、一度ペアリングに成功。macアドレスをbluetoothのものに書き換えると失敗、以降一度もペアリングできない。別の方法を試すべきか？]
 ## 2020/08/27
 pc移行完了
+## 2020/08/28
+一旦凍結。[WIFI_Controller]()に移行した。
 
-# 各種関数
-**工事中**
 # 資料
 [参考サイト（DUALSHOCK™4）](https://techtutorialsx.com/2020/02/15/esp32-connecting-a-ps4-controller/)
 
