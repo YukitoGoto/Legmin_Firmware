@@ -137,7 +137,7 @@ void loop() {
 ## 2020/08/27
 pc移行完了
 ## 2020/08/28
-一旦凍結。[WIFI_Controller](https://github.com/YukitoGoto/Legmin_Firmware/tree/master/WiFi_Controller)に移行した。
+一旦凍結。[WiFi_Controller](https://github.com/YukitoGoto/Legmin_Firmware/tree/master/WiFi_Controller)に移行した。
 
 # 資料
 [参考サイト（DUALSHOCK™4）](https://techtutorialsx.com/2020/02/15/esp32-connecting-a-ps4-controller/)
