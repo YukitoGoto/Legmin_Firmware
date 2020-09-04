@@ -12,6 +12,10 @@ const IPAddress phoneip(192, 168, 4, 2);  // スマホ側のIPアドレス
 
 WiFiUDP udp;
 
+void wifi_controll(void);
+bool ros_status;   //true:on false:off
+uint32_t cnt_x;    //x長押し判定
+
 void setup() {
     Serial.begin(115200);
 
@@ -30,39 +34,84 @@ void setup() {
     Serial.print("esp32 port: ");
     Serial.println(esp32Port);
     Serial.printf("-----------------\n");
+
+    ros_status = false;
+    Serial.printf("ROS is OFF\n");
+    Serial.printf("-----------------\n");
 }
 
 void loop() {
-    if(udp.parsePacket()){
-        switch(udp.read()){
-            case 48:    //'0'(ASCII 0d48)
-                Serial.printf("▲\n");   //btn2
-                break;
-            case 49:    //'1'
-                Serial.printf("◀\n");   //bnt4
-                break;
-            case 50:    //'2'
-                Serial.printf("▶\n");   //bnt6
-                break;
-            case 51:    //'3'
-                Serial.printf("▼\n");   //bnt8
-                break;
-            case 52:    //'4'
-                Serial.printf("A\n");   //btn17
-                break;
-            case 53:    //'5'
-                Serial.printf("B\n");   //bnt20
-                break;
-            case 54:    //'6'
-                Serial.printf("X\n");   //btn12
-                break;
-            case 55:    //'7'
-                Serial.printf("Y\n");   //bnt15
-                break;
-            case 115:
-                Serial.printf("-----------------\n");  //stop command is 's' (ASCII 0d115)
-                break;
-            default: break;
+    wifi_controll();
+}
+
+void wifi_controll(void){
+    if(ros_status){
+        if(udp.parsePacket()){
+            switch(udp.read()){
+                case 54:    //'6'
+                    Serial.printf("X\n");   //btn12
+                    cnt_x++;
+                    if(cnt_x > 15U){
+                        //ROSで操作終了
+                        ros_status = false;
+                        cnt_x = 0U;
+                        Serial.printf("ROS is OFF\n");
+                        Serial.printf("-----------------\n");
+                        delay(2000);
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
     }
+    while(!ros_status){
+        if(udp.parsePacket()){
+            switch(udp.read()){
+                case 48:    //'0'(ASCII 0d48)
+                    Serial.printf("▲\n");   //btn2
+                    //前進
+                    break;
+                case 49:    //'1'
+                    Serial.printf("◀\n");   //bnt4
+                    //左旋回
+                    break;
+                case 50:    //'2'
+                    Serial.printf("▶\n");   //bnt6
+                    //右旋回
+                    break;
+                case 51:    //'3'
+                    Serial.printf("▼\n");   //bnt8
+                    //後進
+                    break;
+                case 52:    //'4'
+                    Serial.printf("A\n");   //btn17
+                    break;
+                case 53:    //'5'
+                    Serial.printf("B\n");   //bnt20
+                    break;
+                case 54:    //'6'
+                    Serial.printf("X\n");   //btn12
+                    //ROSで操作開始
+                    ros_status = true;
+                    Serial.printf("ROS is ON\n");
+                    Serial.printf("-----------------\n");
+                    break;
+                case 55:    //'7'
+                    Serial.printf("Y\n");   //bnt15
+                    break;
+                case 115:
+                    Serial.printf("-----------------\n");  //stop command is 's' (ASCII 0d115)
+                    break;
+                default: break;
+                    //ブレーキ
+            }
+            if(ros_status)
+                return;
+        }
+        else{
+        //ブレーキ
+        }
+    }
+    return;
 }
