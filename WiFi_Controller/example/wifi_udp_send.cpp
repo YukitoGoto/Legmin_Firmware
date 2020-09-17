@@ -4,7 +4,7 @@
 const char ssid[] = "ESP32_wifi";   // SSID
 const char pass[] = "daihidaruma";  // password
 const int esp32Port = 10000;        // esp32側のポート番号
-const int phonePort = 8080;         // スマホ側のポート番号
+const int phonePort = 50500;         // スマホ側のポート番号
 
 const IPAddress esp32ip(192, 168, 4, 1);  // IPアドレス(ゲートウェイも兼ねる)
 const IPAddress subnet(255, 255, 255, 0); // サブネットマスク
