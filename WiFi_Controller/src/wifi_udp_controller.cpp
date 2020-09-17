@@ -57,7 +57,7 @@ void wifi_controll(void){
                     Serial.printf("-----------------\n");
                     uint8_t txt[] = "ROS is OFF\n";
                     udp_send(txt,sizeof(txt)/sizeof(txt[0]),phoneip,phonePort);
-                    while(1){
+                    while(1){//長押し時無限ループ内で処理
                         udp.parsePacket();
                         if(udp.read() == 115)
                             break;
