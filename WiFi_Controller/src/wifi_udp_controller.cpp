@@ -4,7 +4,7 @@
 const char ssid[] = "ESP32_wifi";   // SSID
 const char pass[] = "daihidaruma";  // password
 const int esp32Port = 10000;        // esp32側のポート番号
-const int phonePort = 8080;         // スマホ側のポート番号
+const int phonePort = 50500;         // スマホ側のポート番号
 
 const IPAddress esp32ip(192, 168, 4, 1);  // IPアドレス(ゲートウェイも兼ねる)
 const IPAddress subnet(255, 255, 255, 0); // サブネットマスク
@@ -13,6 +13,8 @@ const IPAddress phoneip(192, 168, 4, 2);  // スマホ側のIPアドレス
 WiFiUDP udp;
 
 void wifi_controll(void);
+void udp_send(uint8_t *data,uint8_t arry,IPAddress remoteip,uint16_t remotePort);
+
 bool ros_status;   //true:on false:off
 uint32_t cnt_x;    //x長押し判定
 
@@ -45,24 +47,31 @@ void loop() {
 }
 
 void wifi_controll(void){
-    if(ros_status){
-        if(udp.parsePacket()){
-            switch(udp.read()){
-                case 54:    //'6'
-                    Serial.printf("X\n");   //btn12
-                    cnt_x++;
-                    if(cnt_x > 15U){
-                        //ROSで操作終了
-                        ros_status = false;
-                        cnt_x = 0U;
-                        Serial.printf("ROS is OFF\n");
-                        Serial.printf("-----------------\n");
-                        delay(2000);
+    if(ros_status & udp.parsePacket()){
+        switch (udp.read()){
+            case 54:    //'6'
+                //Serial.printf("X\n");   //btn12
+                if(cnt_x > 30){
+                    //ROSで操作終了
+                    Serial.printf("ROS is OFF\n");
+                    Serial.printf("-----------------\n");
+                    uint8_t txt[] = "ROS is OFF\n";
+                    udp_send(txt,sizeof(txt)/sizeof(txt[0]),phoneip,phonePort);
+                    while(1){
+                        udp.parsePacket();
+                        if(udp.read() == 115)
+                            break;
                     }
-                    break;
-                default:
-                    break;
-            }
+                    cnt_x = 0;
+                    ros_status = false;
+                }
+                else{
+                    cnt_x++;
+                }
+                break;
+            default:    //stop command is 's' (ASCII 0d115)
+                cnt_x = 0;
+                break;
         }
     }
     while(!ros_status){
@@ -91,27 +100,43 @@ void wifi_controll(void){
                     Serial.printf("B\n");   //bnt20
                     break;
                 case 54:    //'6'
-                    Serial.printf("X\n");   //btn12
-                    //ROSで操作開始
-                    ros_status = true;
-                    Serial.printf("ROS is ON\n");
-                    Serial.printf("-----------------\n");
+                    //Serial.printf("X\n");   //btn12
+                    if(cnt_x > 30){
+                        //ROSで操作開始
+                        Serial.printf("ROS is ON\n");
+                        Serial.printf("-----------------\n");
+                        uint8_t txt[] = "ROS is ON\n";
+                        udp_send(txt,sizeof(txt)/sizeof(txt[0]),phoneip,phonePort);
+                        while(1){
+                            udp.parsePacket();
+                            if(udp.read() == 115)
+                                break;
+                        }
+                        cnt_x = 0;
+                        ros_status = true;
+                        return;
+                    }
+                    else{
+                        cnt_x++;
+                    }
                     break;
                 case 55:    //'7'
                     Serial.printf("Y\n");   //bnt15
                     break;
-                case 115:
-                    Serial.printf("-----------------\n");  //stop command is 's' (ASCII 0d115)
+                default:    //stop command is 's' (ASCII 0d115)
+                    cnt_x = 0;
                     break;
-                default: break;
-                    //ブレーキ
             }
-            if(ros_status)
-                return;
         }
         else{
         //ブレーキ
         }
     }
-    return;
+}
+
+void udp_send(uint8_t *data,uint8_t arry,IPAddress remoteip,uint16_t remotePort){
+    udp.beginPacket(remoteip, remotePort);
+    for(uint8_t cnt = 0;cnt < arry;cnt++)
+        udp.write(data[cnt]);
+    udp.endPacket();
 }
