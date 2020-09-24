@@ -81,7 +81,7 @@ void loop() {
 ```
 シリアルモニタにMACアドレスが表示されます。**得られたMACアドレスはメモして置いてください。**
 ## DUALSHOCK™4に登録
-[SixaxisPairTool](https://dancingpixelstudios.com/sixaxis-controller/sixaxispairtool/)にアクセスします。インストーラー（SixaxisPairToolSetup-0.x.x.exe）をダウンロード、起動して、適当に次へ次へ...とやっていきます。
+[SixaxisPairTool](https://softfamous.com/sixaxispairtool/download/)にアクセスします。インストーラー（SixaxisPairToolSetup-0.x.x.exe）をダウンロード、起動して、適当に次へ次へ...とやっていきます。
 ```
 いづれかのOS（Windows/Linux/MAC OSX）のDownload linkを選択 --> インストーラーを起動 --> 次へ次へ
 ```
