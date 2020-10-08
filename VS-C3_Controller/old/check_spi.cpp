@@ -1,3 +1,4 @@
+//spi通信で信号を確認！
 #include <Arduino.h>
 #include <SPI.h>
 
