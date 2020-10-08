@@ -24,5 +24,4 @@ void loop() {
       Serial.printf(" %x",receive_data[i]);
     pretime = millis();
   }
-
 }
