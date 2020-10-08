@@ -7,4 +7,4 @@ esp32上でのライブラリの動作が確認できなかった。
 # 資料
 [参考サイト(Arduinoで無線コントローラを使う)](http://twinklesmile.blog42.fc2.com/blog-entry-3.html)
 
-[Arduino-PS2X(arduino)](https://www.arduino.cc/en/Reference/WiFi)
+[Arduino-PS2X(arduino)](https://github.com/madsci1016/Arduino-PS2X)
