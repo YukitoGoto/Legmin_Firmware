@@ -10,7 +10,7 @@ long pretime;
 enum controllertype {WiredController_asukiaaa,Ps3_x,Ps3_y};
 
 float calcSpeedRate(int16_t joystickValue, int16_t joystickMax,enum controllertype type) {
-  float rate,value = joystickValue;
+  float rate,value = joystickValue; //int => float 暗黙の方変換
   switch(type){
     case WiredController_asukiaaa:
       rate = (value * 2 - joystickMax) / joystickMax;
