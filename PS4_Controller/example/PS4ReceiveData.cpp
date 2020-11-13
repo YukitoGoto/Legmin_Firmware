@@ -1,5 +1,6 @@
 #include <PS4Controller.h>
 
+//example for PS4
 void setup()
 {
     Serial.begin(9600);
